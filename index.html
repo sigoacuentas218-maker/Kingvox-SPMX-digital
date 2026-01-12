@@ -6,60 +6,14 @@
 <title>Kingvox SPMX</title>
 
 <style>
-html, body {
-    margin: 0;
-    padding: 0;
-    overscroll-behavior: none;
-    touch-action: none;
-}
-
-* {
-    -webkit-user-select: none !important;
-    user-select: none !important;
-    -webkit-touch-callout: none !important;
-    -webkit-tap-highlight-color: transparent !important;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background: #111;
-    color: #eee;
-    text-align: center;
-    padding: 20px;
-}
-
-.image-container {
-    position: relative;
-    display: inline-block;
-}
-
-.base-image {
-    width: 400px;
-    border: 3px solid #444;
-    border-radius: 8px;
-    display: block;
-    pointer-events: none;
-}
-
-.overlay {
-    position: absolute;
-    display: none;
-    pointer-events: none;
-    z-index: 1;
-    width: 115px;
-    height: 110px;
-}
-
-.btn-zone {
-    position: absolute;
-    z-index: 2;
-    width: 115px;
-    height: 110px;
-    background: transparent;
-}
+html, body { margin:0; padding:0; overscroll-behavior:none; touch-action:none; }
+body { font-family:Arial,sans-serif; background:#111; color:#eee; text-align:center; padding:20px; }
+.image-container { position:relative; display:inline-block; }
+.base-image { width:400px; border:3px solid #444; border-radius:8px; display:block; pointer-events:none; }
+.overlay { position:absolute; display:none; pointer-events:none; z-index:1; background: rgba(200,200,200,0.5);}
+.btn-zone { position:absolute; z-index:2; background:transparent; cursor:pointer; user-select:none; display:flex; align-items:center; justify-content:center; color:#eee; font-weight:bold; }
 </style>
 </head>
-
 <body>
 
 <h1>Kingvox SPMX</h1>
@@ -67,139 +21,220 @@ body {
 <div class="image-container">
     <img class="base-image" src="kingvox.jpg" alt="Kingvox SPMX">
 
-    <!-- Overlays -->
-    <img id="overlay1" class="overlay" src="https://www.multiplacas.com.ar/wp-content/uploads/2020/12/sp18275gft_0-2-600x514.jpg" style="top:271px; left:39px;">
-    <img id="overlay2" class="overlay" src="https://www.multiplacas.com.ar/wp-content/uploads/2020/12/sp18275gft_0-2-600x514.jpg" style="top:272px; left:249px;">
-    <img id="overlay3" class="overlay" src="https://www.multiplacas.com.ar/wp-content/uploads/2020/12/sp18275gft_0-2-600x514.jpg" style="top:424px; left:37px;">
-    <img id="overlay4" class="overlay" src="https://www.multiplacas.com.ar/wp-content/uploads/2020/12/sp18275gft_0-2-600x514.jpg" style="top:424px; left:253px;">
-    <img id="overlay5" class="overlay" src="https://www.multiplacas.com.ar/wp-content/uploads/2020/12/sp18275gft_0-2-600x514.jpg" style="top:553px; left:38px;">
-    <img id="overlay6" class="overlay" src="https://www.multiplacas.com.ar/wp-content/uploads/2020/12/sp18275gft_0-2-600x514.jpg" style="top:555px; left:249px;">
+    <!-- Overlays grises -->
+    <div id="overlay1" class="overlay" style="top:234px; left:38px; width:115px; height:110px;"></div>
+    <div id="overlay2" class="overlay" style="top:235px; left:248px; width:113px; height:113px;"></div>
+    <div id="overlay3" class="overlay" style="top:384px; left:37px; width:115px; height:124px;"></div>
+    <div id="overlay4" class="overlay" style="top:382px; left:249px; width:115px; height:124px;"></div>
+    <div id="overlay5" class="overlay" style="top:513px; left:36px; width:118px; height:124px;"></div>
+    <div id="overlay6" class="overlay" style="top:513px; left:248px; width:118px; height:124px;"></div>
 
     <!-- Botones -->
-    <div class="btn-zone" style="top:271px; left:39px;" data-btn="1"></div>
-    <div class="btn-zone" style="top:272px; left:249px;" data-btn="2"></div>
-    <div class="btn-zone" style="top:424px; left:37px;" data-btn="3"></div>
-    <div class="btn-zone" style="top:424px; left:253px;" data-btn="4"></div>
-    <div class="btn-zone" style="top:553px; left:38px;" data-btn="5"></div>
-    <div class="btn-zone" style="top:555px; left:249px;" data-btn="6"></div>
+    <div class="btn-zone" style="top:234px; left:38px; width:115px; height:110px;" data-btn="1">Botón 1</div>
+    <div class="btn-zone" style="top:235px; left:248px; width:113px; height:113px;" data-btn="2">Botón 2</div>
+    <div class="btn-zone" style="top:384px; left:37px; width:115px; height:124px;" data-btn="3">Botón 3</div>
+    <div class="btn-zone" style="top:382px; left:249px; width:115px; height:124px;" data-btn="4">Botón 4</div>
+    <div class="btn-zone" style="top:513px; left:36px; width:118px; height:124px;" data-btn="5">Botón 5</div>
+    <div class="btn-zone" style="top:513px; left:248px; width:118px; height:124px;" data-btn="6">Botón 6</div>
 </div>
 
 <script>
 /* ==== BLOQUEOS ==== */
-document.addEventListener("contextmenu", e => e.preventDefault());
-document.addEventListener("selectstart", e => e.preventDefault());
-document.addEventListener("gesturestart", e => e.preventDefault());
+document.addEventListener("contextmenu", e=>e.preventDefault());
+document.addEventListener("selectstart", e=>e.preventDefault());
+document.addEventListener("gesturestart", e=>e.preventDefault());
 
-/* ==== AUDIO (SIN DELAY EN CELU) ==== */
-let audioUnlocked = false;
-let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-function unlockAudio() {
-    if (audioUnlocked) return;
+/* ==== AUDIO CELU ==== */
+let audioUnlocked=false;
+let audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+function unlockAudio(){
+    if(audioUnlocked) return;
     audioCtx.resume();
-    sounds.forEach(s => {
-        s.play().then(() => {
-            s.pause();
-            s.currentTime = 0;
-        }).catch(()=>{});
+    [...sounds1to4, sound5, ...sounds6, ...sounds1, ...sounds2].forEach(s=>{
+        s.play().then(()=>{s.pause(); s.currentTime=0}).catch(()=>{});
     });
-    audioUnlocked = true;
+    audioUnlocked=true;
 }
 
 /* ==== SONIDOS ==== */
-const sounds = [
+// Botón 1 (4 sonidos independientes)
+const sounds1 = []; 
+for(let i=1;i<=4;i++){ let s=new Audio(`sound1${i}.mp3`); s.preload="auto"; s.load(); sounds1.push(s); }
+
+// Botón 2 (4 sonidos independientes)
+const sounds2 = [];
+for(let i=1;i<=4;i++){ let s=new Audio(`sound1${i}.mp3`); s.preload="auto"; s.load(); sounds2.push(s); }
+
+// Botones 3-4
+const sounds1to4 = [
     new Audio("sound1.mp3"),
     new Audio("sound2.mp3"),
     new Audio("sound3.mp3"),
-    new Audio("sound4.mp3"),
-    new Audio("sound5.mp3"),
-    new Audio("sound6.mp3")
+    new Audio("sound4.mp3")
 ];
 
-sounds.forEach(s => {
-    s.preload = "auto";
-    s.load();
-});
+// Botón 5
+const sound5 = new Audio("sound5.mp3");
 
-const active = [false,false,false,false,false,false];
-let priority = false;
+// Botón 6
+const sounds6=[];
+for(let i=1;i<=13;i++){ let s=new Audio(`sound6${i}.mp3`); s.preload="auto"; s.load(); sounds6.push(s); }
+
+/* ==== ESTADOS ==== */
+const active=[false,false,false,false,false,false];
+let priority=false;
+
+let currentSound5=null;
+let currentSound6=null;
+let index6=0;
+
+let index1=0, index2=0, currentSound1=null, currentSound2=null;
 
 /* ==== EVENTOS ==== */
-document.querySelectorAll(".btn-zone").forEach(btn => {
-    btn.addEventListener("touchstart", e => {
-        e.preventDefault();
-        unlockAudio();
-        const n = Number(btn.dataset.btn);
-        if (n === 4) startPriority();
-        else toggleButton(n);
-    }, { passive: false });
+document.querySelectorAll(".btn-zone").forEach(btn=>{
+    btn.addEventListener("touchstart", e=>{ e.preventDefault(); unlockAudio(); const n=Number(btn.dataset.btn);
+        if(n===4) startPriority();
+        else if(n===5) toggleButton5();
+        else if(n===6) toggleButton6();
+        else if(n===1) toggleButton1();
+        else if(n===2) toggleButton2();
+        else if(n===3) startRecording();
+        else toggleButtonNormal(n);
+    }, {passive:false});
 
-    btn.addEventListener("touchend", e => {
-        e.preventDefault();
-        if (Number(btn.dataset.btn) === 4) stopPriority();
-    }, { passive: false });
+    btn.addEventListener("touchend", e=>{ e.preventDefault(); if(Number(btn.dataset.btn)===4) stopPriority(); if(Number(btn.dataset.btn)===3) stopRecording(); }, {passive:false});
 
-    btn.addEventListener("mousedown", e => {
-        e.preventDefault();
-        unlockAudio();
-        const n = Number(btn.dataset.btn);
-        if (n === 4) startPriority();
-        else toggleButton(n);
+    btn.addEventListener("mousedown", e=>{ e.preventDefault(); unlockAudio(); const n=Number(btn.dataset.btn);
+        if(n===4) startPriority();
+        else if(n===5) toggleButton5();
+        else if(n===6) toggleButton6();
+        else if(n===1) toggleButton1();
+        else if(n===2) toggleButton2();
+        else if(n===3) startRecording();
+        else toggleButtonNormal(n);
     });
 
-    btn.addEventListener("mouseup", e => {
-        e.preventDefault();
-        if (Number(btn.dataset.btn) === 4) stopPriority();
-    });
-
-    btn.addEventListener("mouseleave", stopPriority);
+    btn.addEventListener("mouseup", e=>{ e.preventDefault(); if(Number(btn.dataset.btn)===4) stopPriority(); if(Number(btn.dataset.btn)===3) stopRecording(); });
 });
 
-/* ==== BOTONES NORMALES ==== */
-function toggleButton(n){
+/* ==== BOTON 1 ==== */
+function toggleButton1(){
     if(priority) return;
-    const i = n - 1;
-    const overlay = document.getElementById("overlay" + n);
-
-    if(!active[i]){
-        sounds[i].currentTime = 0;
-        sounds[i].play();
-        overlay.style.display = "block";
-        active[i] = true;
-    } else {
-        sounds[i].pause();
-        sounds[i].currentTime = 0;
-        overlay.style.display = "none";
-        active[i] = false;
-    }
+    if(currentSound5){ currentSound5.pause(); currentSound5.currentTime=0; currentSound5=null; }
+    if(currentSound6){ currentSound6.pause(); currentSound6.currentTime=0; currentSound6=null; index6=0; }
+    const overlay=document.getElementById("overlay1"); overlay.style.display="block"; setTimeout(()=>overlay.style.display="none",200);
+    if(currentSound1){ currentSound1.pause(); currentSound1.currentTime=0; }
+    currentSound1=sounds1[index1]; currentSound1.currentTime=0; currentSound1.play();
+    index1=(index1+1)%sounds1.length;
 }
 
-/* ==== BOTÓN 4 PRIORITARIO ==== */
+/* ==== BOTON 2 ==== */
+function toggleButton2(){
+    if(priority) return;
+    if(currentSound5){ currentSound5.pause(); currentSound5.currentTime=0; currentSound5=null; }
+    if(currentSound6){ currentSound6.pause(); currentSound6.currentTime=0; currentSound6=null; index6=0; }
+    const overlay=document.getElementById("overlay2"); overlay.style.display="block"; setTimeout(()=>overlay.style.display="none",200);
+    if(currentSound2){ currentSound2.pause(); currentSound2.currentTime=0; }
+    currentSound2=sounds2[index2]; currentSound2.currentTime=0; currentSound2.play();
+    index2=(index2+1)%sounds2.length;
+}
+
+/* ==== BOTONES 3 ==== */
+// Grabación voz + efecto radio policiaca
+let mediaRecorder, audioChunks=[];
+
+async function startRecording(){
+    if(priority) return;
+    const overlay=document.getElementById("overlay3"); overlay.style.display="block";
+    if(mediaRecorder && mediaRecorder.state==="recording") return;
+    const stream = await navigator.mediaDevices.getUserMedia({ audio:true });
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks=[];
+    mediaRecorder.ondataavailable = e => { audioChunks.push(e.data); };
+    mediaRecorder.start();
+}
+
+async function stopRecording(){
+    const overlay=document.getElementById("overlay3"); overlay.style.display="none";
+    if(!mediaRecorder) return;
+    mediaRecorder.stop();
+    mediaRecorder.onstop = async ()=>{
+        const blob = new Blob(audioChunks, {type:'audio/webm'});
+        const arrayBuffer = await blob.arrayBuffer();
+        const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+        // Crear efecto radio policiaca
+        const source = audioCtx.createBufferSource();
+        source.buffer = audioBuffer;
+
+        const highpass = audioCtx.createBiquadFilter();
+        highpass.type = "highpass"; highpass.frequency.value = 600;
+
+        const distortion = audioCtx.createWaveShaper();
+        distortion.curve = makeDistortionCurve(200); 
+        distortion.oversample = "4x";
+
+        const compressor = audioCtx.createDynamicsCompressor();
+        compressor.threshold.setValueAtTime(-24, audioCtx.currentTime);
+        compressor.ratio.setValueAtTime(12, audioCtx.currentTime);
+
+        source.connect(highpass).connect(distortion).connect(compressor).connect(audioCtx.destination);
+        source.start();
+    };
+}
+
+// Curva de distorsión
+function makeDistortionCurve(amount) {
+    const k = typeof amount === 'number' ? amount : 50;
+    const n_samples = 44100;
+    const curve = new Float32Array(n_samples);
+    const deg = Math.PI/180;
+    for(let i=0;i<n_samples;i++){
+        const x = i*2/n_samples-1;
+        curve[i] = ((3 + k) * x * 20*deg)/(Math.PI + k*Math.abs(x));
+    }
+    return curve;
+}
+
+/* ==== BOTON 5 ==== */
+function toggleButton5(){
+    if(priority) return;
+    if(currentSound6){ currentSound6.pause(); currentSound6.currentTime=0; currentSound6=null; index6=0; }
+    const overlay=document.getElementById("overlay5"); overlay.style.display="block"; setTimeout(()=>overlay.style.display="none",200);
+    if(currentSound5){ currentSound5.pause(); currentSound5.currentTime=0; currentSound5=null; return; }
+    currentSound5=sound5; currentSound5.currentTime=0; currentSound5.play();
+}
+
+/* ==== BOTON 6 ==== */
+function toggleButton6(){
+    if(priority) return;
+    if(currentSound5){ currentSound5.pause(); currentSound5.currentTime=0; currentSound5=null; }
+    const overlay=document.getElementById("overlay6"); overlay.style.display="block"; setTimeout(()=>overlay.style.display="none",200);
+    if(currentSound6){ currentSound6.pause(); currentSound6.currentTime=0; }
+    currentSound6=sounds6[index6]; currentSound6.currentTime=0; currentSound6.play();
+    index6=(index6+1)%sounds6.length;
+}
+
+/* ==== BOTON 4 ==== */
 function startPriority(){
     if(priority) return;
-    priority = true;
-
-    for(let i = 0; i < sounds.length; i++){
-        sounds[i].pause();
-        sounds[i].currentTime = 0;
-        active[i] = false;
-        document.getElementById("overlay" + (i+1)).style.display = "none";
-    }
-
-    document.getElementById("overlay4").style.display = "block";
-    sounds[3].loop = true;
-    sounds[3].play();
+    priority=true;
+    for(let i=0;i<4;i++){ sounds1to4[i].pause(); sounds1to4[i].currentTime=0; active[i]=false; document.getElementById("overlay"+(i+1)).style.display="none"; }
+    if(currentSound5){ currentSound5.pause(); currentSound5.currentTime=0; currentSound5=null; }
+    if(currentSound6){ currentSound6.pause(); currentSound6.currentTime=0; currentSound6=null; index6=0; }
+    if(currentSound1){ currentSound1.pause(); currentSound1.currentTime=0; currentSound1=null; index1=0; }
+    if(currentSound2){ currentSound2.pause(); currentSound2.currentTime=0; currentSound2=null; index2=0; }
+    const overlay4=document.getElementById("overlay4"); overlay4.style.display="block"; sounds1to4[3].currentTime=0; sounds1to4[3].play();
 }
-
 function stopPriority(){
     if(!priority) return;
-    sounds[3].pause();
-    sounds[3].currentTime = 0;
-    document.getElementById("overlay4").style.display = "none";
-    priority = false;
+    sounds1to4[3].pause(); sounds1to4[3].currentTime=0;
+    document.getElementById("overlay4").style.display="none";
+    priority=false;
 }
 </script>
 
 </body>
 </html>
+
 
