@@ -7,54 +7,55 @@
 
 <style>
 html, body {
-    margin:0;
-    padding:0;
-    overscroll-behavior:none;
+    margin: 0;
+    padding: 0;
+    overscroll-behavior: none;
+    touch-action: none;
 }
 
 * {
-    -webkit-user-select:none !important;
-    user-select:none !important;
-    -webkit-touch-callout:none !important;
-    touch-action:none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-tap-highlight-color: transparent !important;
 }
 
-body{
-    font-family:Arial, sans-serif;
-    background:#111;
-    color:#eee;
-    text-align:center;
-    padding:20px;
+body {
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: #eee;
+    text-align: center;
+    padding: 20px;
 }
 
-.image-container{
-    position:relative;
-    display:inline-block;
+.image-container {
+    position: relative;
+    display: inline-block;
 }
 
-.base-image{
-    width:400px;
-    border:3px solid #444;
-    border-radius:8px;
-    display:block;
-    pointer-events:none;
+.base-image {
+    width: 400px;
+    border: 3px solid #444;
+    border-radius: 8px;
+    display: block;
+    pointer-events: none;
 }
 
-.overlay{
-    position:absolute;
-    display:none;
-    pointer-events:none;
-    z-index:1;
-    width:115px;
-    height:110px;
+.overlay {
+    position: absolute;
+    display: none;
+    pointer-events: none;
+    z-index: 1;
+    width: 115px;
+    height: 110px;
 }
 
-.btn-zone{
-    position:absolute;
-    z-index:2;
-    width:115px;
-    height:110px;
-    background:transparent;
+.btn-zone {
+    position: absolute;
+    z-index: 2;
+    width: 115px;
+    height: 110px;
+    background: transparent;
 }
 </style>
 </head>
@@ -78,19 +79,34 @@ body{
     <div class="btn-zone" style="top:271px; left:39px;" data-btn="1"></div>
     <div class="btn-zone" style="top:272px; left:249px;" data-btn="2"></div>
     <div class="btn-zone" style="top:424px; left:37px;" data-btn="3"></div>
-
-    <!-- Botón 4 -->
     <div class="btn-zone" style="top:424px; left:253px;" data-btn="4"></div>
-
     <div class="btn-zone" style="top:553px; left:38px;" data-btn="5"></div>
     <div class="btn-zone" style="top:555px; left:249px;" data-btn="6"></div>
 </div>
 
 <script>
+/* ==== BLOQUEOS ==== */
 document.addEventListener("contextmenu", e => e.preventDefault());
 document.addEventListener("selectstart", e => e.preventDefault());
 document.addEventListener("gesturestart", e => e.preventDefault());
 
+/* ==== AUDIO (SIN DELAY EN CELU) ==== */
+let audioUnlocked = false;
+let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function unlockAudio() {
+    if (audioUnlocked) return;
+    audioCtx.resume();
+    sounds.forEach(s => {
+        s.play().then(() => {
+            s.pause();
+            s.currentTime = 0;
+        }).catch(()=>{});
+    });
+    audioUnlocked = true;
+}
+
+/* ==== SONIDOS ==== */
 const sounds = [
     new Audio("sound1.mp3"),
     new Audio("sound2.mp3"),
@@ -100,61 +116,57 @@ const sounds = [
     new Audio("sound6.mp3")
 ];
 
+sounds.forEach(s => {
+    s.preload = "auto";
+    s.load();
+});
+
 const active = [false,false,false,false,false,false];
 let priority = false;
 
+/* ==== EVENTOS ==== */
 document.querySelectorAll(".btn-zone").forEach(btn => {
-
     btn.addEventListener("touchstart", e => {
         e.preventDefault();
+        unlockAudio();
         const n = Number(btn.dataset.btn);
-
-        if(n === 4){
-            startPriority();
-        }else{
-            toggleButton(n);
-        }
-    }, {passive:false});
+        if (n === 4) startPriority();
+        else toggleButton(n);
+    }, { passive: false });
 
     btn.addEventListener("touchend", e => {
         e.preventDefault();
-        if(Number(btn.dataset.btn) === 4){
-            stopPriority();
-        }
-    }, {passive:false});
+        if (Number(btn.dataset.btn) === 4) stopPriority();
+    }, { passive: false });
 
     btn.addEventListener("mousedown", e => {
         e.preventDefault();
+        unlockAudio();
         const n = Number(btn.dataset.btn);
-
-        if(n === 4){
-            startPriority();
-        }else{
-            toggleButton(n);
-        }
+        if (n === 4) startPriority();
+        else toggleButton(n);
     });
 
     btn.addEventListener("mouseup", e => {
         e.preventDefault();
-        if(Number(btn.dataset.btn) === 4){
-            stopPriority();
-        }
+        if (Number(btn.dataset.btn) === 4) stopPriority();
     });
 
     btn.addEventListener("mouseleave", stopPriority);
 });
 
+/* ==== BOTONES NORMALES ==== */
 function toggleButton(n){
     if(priority) return;
-    const i = n-1;
-    const overlay = document.getElementById("overlay"+n);
+    const i = n - 1;
+    const overlay = document.getElementById("overlay" + n);
 
     if(!active[i]){
         sounds[i].currentTime = 0;
         sounds[i].play();
         overlay.style.display = "block";
         active[i] = true;
-    }else{
+    } else {
         sounds[i].pause();
         sounds[i].currentTime = 0;
         overlay.style.display = "none";
@@ -162,15 +174,16 @@ function toggleButton(n){
     }
 }
 
+/* ==== BOTÓN 4 PRIORITARIO ==== */
 function startPriority(){
     if(priority) return;
     priority = true;
 
-    for(let i=0;i<sounds.length;i++){
+    for(let i = 0; i < sounds.length; i++){
         sounds[i].pause();
         sounds[i].currentTime = 0;
         active[i] = false;
-        document.getElementById("overlay"+(i+1)).style.display = "none";
+        document.getElementById("overlay" + (i+1)).style.display = "none";
     }
 
     document.getElementById("overlay4").style.display = "block";
